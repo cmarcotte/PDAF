@@ -4,3 +4,4 @@ include
 external/**/*.mod
 external/**/*.o
 Srcfiles
+.DS_Store
