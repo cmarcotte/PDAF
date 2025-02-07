@@ -5,3 +5,6 @@ external/**/*.mod
 external/**/*.o
 Srcfiles
 .DS_Store
+*.mod
+*.nc
+*.o
