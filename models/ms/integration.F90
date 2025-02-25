@@ -174,7 +174,7 @@ SUBROUTINE mitsch_dxdt(dim_state, x, dxdt, time)
  tc = x(dim_state - np + 6)
  ug = x(dim_state - np + 7)
 
-! Compute derivate
+! Compute derivative
   DO i = 1, nx
      ! Cyclic boundary conditions:
      im1 = i - 1
