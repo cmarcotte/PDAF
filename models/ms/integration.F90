@@ -142,7 +142,10 @@ SUBROUTINE mitsch_dxdt(dim_state, x, dxdt, time)
 ! !USES:
   USE mod_model, &        ! Model variables
        ONLY: forcing
-
+!  #ifdef USE_PDAF
+!  USE mod_assimilation, & ! Variables for assimilation
+!      ONLY: filtertype, incremental, model_error
+!  #endif
   IMPLICIT NONE
 
 ! !ARGUMENTS:
@@ -200,6 +203,10 @@ SUBROUTINE mitsch_dxdt(dim_state, x, dxdt, time)
   	dxdt(i) = 0
   END DO
 
+#ifdef USE_PDAF
+ 	! *** PDAF: Add parameter error ***
+  	CALL add_model_noise(forcing, 7, dxdt((dim_state - 7 + 1):dim_state))
+#endif
 END SUBROUTINE mitsch_dxdt
 
 ! function for smoothed sigmoid

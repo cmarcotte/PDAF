@@ -186,7 +186,7 @@ SUBROUTINE init_pdaf()
   delt_write_asml = 1    ! Output interval for state information in assimilation intervals
   write_states = .TRUE.  ! Whether to write estimates states into the output file
   write_stats  = .TRUE.  ! Whether to write time dependent ensemble statistics (skewness, kurtosis)
-  write_ens  = .FALSE.   ! Whether to write full time dependent ensemble stats
+  write_ens  = .TRUE.   ! Whether to write full time dependent ensemble stats
   stepnull_means = 3001  ! Step at which the second computation of time mean error is started
                          ! (first computation of mean sis always starting at initial step)
 
@@ -194,7 +194,7 @@ SUBROUTINE init_pdaf()
   ! avg. observation error (used for assimilation)
   rms_obs = 1.0      ! This error is the standard deviation
                      ! for the Gaussian distribution
-  delt_obs = 1       ! Time step interval between analysis/assimilation steps
+  delt_obs = 100       ! Time step interval between analysis/assimilation steps
   use_obs_mask = .TRUE. ! Whether to use observations with gaps
   use_maskfile = .TRUE. ! If a mask is used read it from file
   numobs = dim_state ! If not read from file use this number of obs. (1 to numobs)
@@ -202,15 +202,15 @@ SUBROUTINE init_pdaf()
   obs_err_type = 0   ! Observation errors: (0) for Gaussian (1) for double-exponential
 
 ! *** Filter specific variables ***
-  type_ensinit = 'eof' ! 'eof' for 2nd-order exact sampling from EOFs
+  type_ensinit = 'rnd' ! 'eof' for 2nd-order exact sampling from EOFs
                     !    'rnd' for random sampling from true state trajectory
   seedset = 1       ! Index of set of seeds to be used for init (only for 'rnd')
   covartype = 1     ! Definition of factor in covar. matrix used in SEIK
                     ! (0) for (r+1)^-1 (old SEIK); (1): for r^-1 (real ensemble
                     ! covariance matrix) This parameter has also to be set internally
                     ! in PDAF_init
-  cradius = 5       ! Cut-off radius in grid points for observation domain
-  locweight = 0     ! Type of localizating weighting
+  cradius = 7       ! Cut-off radius in grid points for observation domain
+  locweight = 2     ! Type of localizating weighting
                     !   (0) constant weight of 1
                     !   (1) exponentially decreasing with SRADIUS
                     !   (2) use 5th-order polynomial

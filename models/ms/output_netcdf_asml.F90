@@ -4,7 +4,7 @@
 ! !MODULE:
 MODULE output_netcdf_asml
 
-! !DESCRIPTION: 
+! !DESCRIPTION:
 ! This module provides routines to initialize
 ! NetCDF output files for the assimilation in the
 ! Lorenz96 model and to write output into the files.
@@ -24,8 +24,8 @@ MODULE output_netcdf_asml
   CHARACTER(len=100) :: file_asml = 'asml.nc' ! Name of the NetCDF output file
   INTEGER :: delt_write_asml = 1              ! Output interval in assimilation intervals
   LOGICAL :: write_states    = .TRUE.         ! Whether to write estimated states
-  LOGICAL :: write_stats     = .FALSE.        ! Whether to write ensemble statistics
-  LOGICAL :: write_ens       = .FALSE.        ! Whether to write full ensemble 
+  LOGICAL :: write_stats     = .TRUE.        ! Whether to write ensemble statistics
+  LOGICAL :: write_ens       = .TRUE.        ! Whether to write full ensemble
 
 !EOP
 
@@ -46,7 +46,7 @@ CONTAINS
        seedset, stepnull_means, dim_lag)
 
 ! !DESCRIPTION:
-! This routine initializes the netcdf file 
+! This routine initializes the netcdf file
 
 ! !USES:
     IMPLICIT NONE
@@ -87,7 +87,7 @@ CONTAINS
     INTEGER :: dimarray3(3)           ! Array for dimensions
     CHARACTER(len=100) :: attstr      ! String to write attributes
 
-! *** Initialize file ***    
+! *** Initialize file ***
 
 ! Print screen information
     WRITE (*, '(/1x, a)') 'Initialize NetCDF output'
@@ -106,16 +106,16 @@ CONTAINS
 
     s = 1
 
-    stat(s) = NF90_CREATE(TRIM(file_asml), 0, fileid) 
+    stat(s) = NF90_CREATE(TRIM(file_asml), 0, fileid)
     s = s + 1
 
     attstr  = 'Assimilation into Lorenz96 model'
-    stat(s) = NF90_PUT_ATT(fileid, NF90_GLOBAL, 'title', TRIM(attstr)) 
+    stat(s) = NF90_PUT_ATT(fileid, NF90_GLOBAL, 'title', TRIM(attstr))
     s = s + 1
 
 ! Define Dimensions
 
-    stat(s) = NF90_DEF_DIM(fileid, 'dim_state', dim, dimid_state)             
+    stat(s) = NF90_DEF_DIM(fileid, 'dim_state', dim, dimid_state)
     s = s + 1
     stat(s) = NF90_DEF_DIM(fileid, 'iteration', NF90_UNLIMITED, dimid_step)
     s = s + 1
@@ -129,120 +129,120 @@ CONTAINS
     s = s + 1
 
 ! Define variables characterizing the experiment
-    stat(s) = NF90_DEF_VAR(fileid, 'filtertype', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'filtertype', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'subtype', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'subtype', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'dim_ens', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'dim_ens', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'forget', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'forget', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'step_null', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'step_null', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'total_steps', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'total_steps', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'type_ensinit_id', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'type_ensinit_id', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'cradius', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'cradius', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'cradius2', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'cradius2', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'locweight', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'locweight', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'sradius', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'sradius', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'rms_obs', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'rms_obs', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'delt_obs', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'delt_obs', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'seedset', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'seedset', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'stepnull_means', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'stepnull_means', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
 
 
 ! Define variables
-    
+
     s = 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_for_null', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_for_null', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_ana_null', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_ana_null', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_for_null', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_for_null', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_ana_null', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_ana_null', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_for_step', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_for_step', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_ana_step', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mrmse_ana_step', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_for_step', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_for_step', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_ana_step', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_ana_step', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
 
     smootherA: IF (dim_lag > 0) THEN
-       stat(s) = NF90_DEF_VAR(fileid, 'mrmse_smoother_null', NF90_DOUBLE, DimId_lag, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'mrmse_smoother_null', NF90_DOUBLE, DimId_lag, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_smoother_null', NF90_DOUBLE, DimId_lag, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_smoother_null', NF90_DOUBLE, DimId_lag, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'mrmse_smoother_step', NF90_DOUBLE, DimId_lag, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'mrmse_smoother_step', NF90_DOUBLE, DimId_lag, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_smoother_step', NF90_DOUBLE, DimId_lag, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'mtrmse_smoother_step', NF90_DOUBLE, DimId_lag, Id_tmp)
        s = s + 1
     END IF smootherA
 
-    stat(s) = NF90_DEF_VAR(fileid, 'step', NF90_INT, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'step', NF90_INT, DimId_step, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'step_ini', NF90_INT, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'step_ini', NF90_INT, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'time', NF90_DOUBLE, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'time', NF90_DOUBLE, DimId_step, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'time_ini', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'time_ini', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'rmse_ini', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'rmse_ini', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'rmse_for', NF90_DOUBLE, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'rmse_for', NF90_DOUBLE, DimId_step, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'rmse_ana', NF90_DOUBLE, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'rmse_ana', NF90_DOUBLE, DimId_step, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'trmse_ini', NF90_DOUBLE, DimId_1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'trmse_ini', NF90_DOUBLE, DimId_1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'trmse_for', NF90_DOUBLE, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'trmse_for', NF90_DOUBLE, DimId_step, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'trmse_ana', NF90_DOUBLE, DimId_step, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'trmse_ana', NF90_DOUBLE, DimId_step, Id_tmp)
     s = s + 1
 
     smootherB: IF (dim_lag > 0) THEN
        dimarray(1) = dimid_lag
        dimarray(2) = dimid_step
-       stat(s) = NF90_DEF_VAR(fileid, 'rmse_smoother', NF90_DOUBLE, dimarray, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'rmse_smoother', NF90_DOUBLE, dimarray, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'trmse_smoother', NF90_DOUBLE, dimarray, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'trmse_smoother', NF90_DOUBLE, dimarray, Id_tmp)
        s = s + 1
     END IF smootherB
 
-    stat(s) = NF90_DEF_VAR(fileid, 'hist_true_null', NF90_INT, Dimid_ensp1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'hist_true_null', NF90_INT, Dimid_ensp1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'hist_mean_null', NF90_INT, Dimid_ensp1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'hist_mean_null', NF90_INT, Dimid_ensp1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'hist_true_step', NF90_INT, Dimid_ensp1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'hist_true_step', NF90_INT, Dimid_ensp1, Id_tmp)
     s = s + 1
-    stat(s) = NF90_DEF_VAR(fileid, 'hist_mean_step', NF90_INT, Dimid_ensp1, Id_tmp) 
+    stat(s) = NF90_DEF_VAR(fileid, 'hist_mean_step', NF90_INT, Dimid_ensp1, Id_tmp)
     s = s + 1
 
     writestats: IF (write_stats) THEN
-       stat(s) = NF90_DEF_VAR(fileid, 'skewness_ini', NF90_DOUBLE, DimId_1, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'skewness_ini', NF90_DOUBLE, DimId_1, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_ini', NF90_DOUBLE, DimId_1, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_ini', NF90_DOUBLE, DimId_1, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'skewness_for', NF90_DOUBLE, DimId_step, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'skewness_for', NF90_DOUBLE, DimId_step, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_for', NF90_DOUBLE, DimId_step, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_for', NF90_DOUBLE, DimId_step, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'skewness_ana', NF90_DOUBLE, DimId_step, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'skewness_ana', NF90_DOUBLE, DimId_step, Id_tmp)
        s = s + 1
-       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_ana', NF90_DOUBLE, DimId_step, Id_tmp) 
+       stat(s) = NF90_DEF_VAR(fileid, 'kurtosis_ana', NF90_DOUBLE, DimId_step, Id_tmp)
        s = s + 1
     END IF writestats
 
@@ -279,32 +279,32 @@ CONTAINS
        s = s + 1
     END IF writeens
 
-    stat(s) = NF90_ENDDEF(fileid) 
+    stat(s) = NF90_ENDDEF(fileid)
     s = s + 1
 
 ! Write variables characterizing the experiment
 
-    stat(s) = NF90_INQ_VARID(fileid, 'filtertype', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'filtertype', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, filtertype)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'subtype', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'subtype', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, subtype)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'dim_ens', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'dim_ens', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, dim_ens)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'forget', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'forget', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, forget)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'step_null', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'step_null', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, step)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'total_steps', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'total_steps', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, total_steps)
     s = s + 1
@@ -313,39 +313,39 @@ CONTAINS
     ELSE IF (type_ensinit == 'rnd') THEN
        type_ensinit_id = 2
     END IF
-    stat(s) = NF90_INQ_VARID(fileid, 'type_ensinit_id', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'type_ensinit_id', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, type_ensinit_id)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'cradius', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'cradius', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, cradius)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'cradius2', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'cradius2', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, cradius2)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'locweight', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'locweight', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, locweight)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'sradius', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'sradius', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, sradius)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'rms_obs', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'rms_obs', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, rms_obs)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'delt_obs', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'delt_obs', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, delt_obs)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'seedset', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'seedset', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, seedset)
     s = s + 1
-    stat(s) = NF90_INQ_VARID(fileid, 'stepnull_means', Id_tmp) 
+    stat(s) = NF90_INQ_VARID(fileid, 'stepnull_means', Id_tmp)
     s = s + 1
     stat(s) = NF90_PUT_VAR(fileid, Id_tmp, stepnull_means)
     s = s + 1
@@ -368,7 +368,7 @@ CONTAINS
        mtrmse_s_null, mrmse_s_step, mtrmse_s_step)
 
 ! !DESCRIPTION:
-! This routine initializes the netcdf file 
+! This routine initializes the netcdf file
 
 ! !USES:
     IMPLICIT NONE
@@ -481,7 +481,7 @@ CONTAINS
           stat(s) = NF90_INQ_VARID(fileid, "ens_for", Id_ens)
           s = s + 1
        END IF
-       stat(s) = NF90_INQ_VARID(fileid, "time", Id_time) 
+       stat(s) = NF90_INQ_VARID(fileid, "time", Id_time)
        s = s + 1
        stat(s) = NF90_INQ_VARID(fileid, "step", Id_step)
        s = s + 1
@@ -514,7 +514,7 @@ CONTAINS
           stat(s) = NF90_INQ_VARID(fileid, "ens_ana", Id_ens)
           s = s + 1
        END IF
-       stat(s) = NF90_INQ_VARID(fileid, "time", Id_time) 
+       stat(s) = NF90_INQ_VARID(fileid, "time", Id_time)
        s = s + 1
        stat(s) = NF90_INQ_VARID(fileid, "step", Id_step)
        s = s + 1
@@ -619,7 +619,7 @@ CONTAINS
        cnt(1) = 1
        stat(s) = NF90_PUT_VAR(fileid, Id_rmse, rmse, start=pos(1:1))
        s = s + 1
-    
+
        pos(1) = file_pos
        cnt(1) = 1
        stat(s) = NF90_PUT_VAR(fileid, Id_trmse, trmse, start=pos(1:1))
@@ -633,7 +633,7 @@ CONTAINS
           cnt(2) = 1
           stat(s) = NF90_PUT_VAR(fileid, Id_rmse_s, rmse_s, start=pos)
           s = s + 1
-    
+
           stat(s) = NF90_PUT_VAR(fileid, Id_trmse_s, trmse_s, start=pos)
           s = s + 1
        END IF smootherB

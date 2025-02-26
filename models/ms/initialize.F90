@@ -37,7 +37,7 @@ SUBROUTINE initialize()
        ONLY: file_state, delt_write, init_netcdf
 
   IMPLICIT NONE
-
+  INTEGER :: i
 ! !ARGUMENTS:
 !EOP
 
@@ -108,18 +108,19 @@ SUBROUTINE initialize()
 
 #ifdef USE_PDAF
 	! initialize the model parameter deviations (std.dev = 0.05)
-	CALL add_model_noise(0.05, 7, x((dim_state - 7 + 1):dim_state))
+	! print to stdout the model parameters
+	CALL add_model_noise(forcing, 7, x((dim_state - 7 + 1):dim_state))
 #else
   ! Initialize model parameters in state vector to zero
 	x(dim_state - 7 + 1 : dim_state) = 0.0
 #endif
   x(dim_state - 7 + 1) = x(dim_state - 7 + 1) + 0.1		! diffusive coupling
-  x(dim_state - 7 + 2) = x(dim_state - 7 + 2) + 10.0	! sigmoidal strength
+  x(dim_state - 7 + 2) = x(dim_state - 7 + 2) + 10.0		! sigmoidal strength
   x(dim_state - 7 + 3) = x(dim_state - 7 + 3) + 0.3		! ti
   x(dim_state - 7 + 4) = x(dim_state - 7 + 4) + 6.0		! tu
-  x(dim_state - 7 + 5) = x(dim_state - 7 + 5) + 120.0	! to
-  x(dim_state - 7 + 6) = x(dim_state - 7 + 6) + 150.0	! tc
-  x(dim_state - 7 + 7) = x(dim_state - 7 + 7) + 0.13	! ug
+  x(dim_state - 7 + 5) = x(dim_state - 7 + 5) + 120.0		! to
+  x(dim_state - 7 + 6) = x(dim_state - 7 + 6) + 150.0		! tc
+  x(dim_state - 7 + 7) = x(dim_state - 7 + 7) + 0.13		! ug
 
   ! Initialize model time
   time = REAL(step_null) * dt
