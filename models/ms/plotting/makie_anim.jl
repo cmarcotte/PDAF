@@ -31,7 +31,7 @@ function printParameters(p::Vector{T}; parnames = ("\\sigma", "k", "\\tau_{i}", 
 	return s
 end
 
-function truthMovie(tt, xt, xo; framerate = 60)
+function truthMovie(tt, xt, xo; framerate = 60, name = "truth_anim.mp4")
 	GLMakie.activate!()
 	# set up animation observables
 	n = Observable(1)
@@ -60,15 +60,23 @@ function truthMovie(tt, xt, xo; framerate = 60)
 	# set animation parameters
 	indices = range(0, min(size(xt,2),size(xo,2))-1, step=1)
 
+	# format the output name
+	if occursin(".nc", name)
+		name = first(split(name, ".nc"))
+	elseif occursin(".mp4", name)
+		name = first(split(name, ".nc"))
+	end
+	name = last(split(name, "/"))
+
 	# record animation
-	record(fig, "truth_anim.mp4", indices; framerate = framerate, profile = "high444", compression = 0) do t
+	record(fig, "$(name).mp4", indices; framerate = framerate, profile = "high444", compression = 0) do t
 		n[] = t+1
 		tit.text[] = L"$t = %$(_tt[]) $ [t.u.]"
 	end
 	return fig, ax
 end
 
-function assimMovie(tt, xt, xo, xf, xa; framerate = 60)
+function assimMovie(tt, xt, xo, xf, xa; framerate = 60, name = "assim_anim.mp4")
 	GLMakie.activate!()
 	# set up animation observables
 	n = Observable(1)
@@ -105,8 +113,17 @@ function assimMovie(tt, xt, xo, xf, xa; framerate = 60)
 	# set animation parameters
 	indices = range(0, min(size(xt,2),size(xo,2),size(xa,2),size(xf,2))-1, step=1)
 
+
+	# format the output name
+	if occursin(".nc", name)
+		name = first(split(name, ".nc"))
+	elseif occursin(".mp4", name)
+		name = first(split(name, ".nc"))
+	end
+	name = last(split(name, "/"))
+
 	# record animation
-	record(fig, "assim_anim.mp4", indices; framerate = framerate, profile = "high444", compression = 0) do t
+	record(fig, "$(name).mp4", indices; framerate = framerate, profile = "high444", compression = 0) do t
 		n[] = t+1
 		tit.text[] = L"$t = %$(_tt[]) $ [t.u.]; $ %$(printParameters(_pa[] .- _pt[])) $"
 		#par.text[] = L"$%$(printParameters(_pa[] .- _pt[]))$"
@@ -160,10 +177,10 @@ function main(ARGS)
 	xo = xo[:,io]
 
 	# create the truth movie
-	truthMovie(tt, xt, xo);
+	truthMovie(tt, xt, xo; name = truth_file);
 
 	# create the assimilation movie
-	assimMovie(tt, xt, xo, xf, xa);
+	assimMovie(tt, xt, xo, xf, xa; name = assim_file);
 
 
 end
