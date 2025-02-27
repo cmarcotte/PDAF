@@ -206,6 +206,9 @@ SUBROUTINE mitsch_dxdt(dim_state, x, dxdt, time)
 #ifdef USE_PDAF
  	! *** PDAF: Add parameter error ***
   	CALL add_model_noise(forcing, 7, dxdt((dim_state - 7 + 1):dim_state))
+   DO i = nv*nx+1, dim_state
+   	dxdt(i) = dxdt(i) * x(i)
+   END DO
 #endif
 END SUBROUTINE mitsch_dxdt
 

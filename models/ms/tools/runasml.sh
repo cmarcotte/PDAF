@@ -13,7 +13,7 @@ EXE="./pdaf_mitsch"
 # General settings for all experiments
 DEFAULTS="-total_steps 50000 -step_null 0 -dim_ens 30"
 
-FILTER=6
+FILTER=7
 
 # Run experiments
 for FORGET in 1

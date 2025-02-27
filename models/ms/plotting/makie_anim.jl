@@ -26,7 +26,7 @@ end
 function printParameters(p::Vector{T}; parnames = ("\\sigma", "k", "\\tau_{i}", "\\tau_{u}", "\\tau_{o}", "\\tau_{c}", "u_{g}")) where {T<:Real}
 	s = ""
 	for (i, (par, name)) in enumerate(zip(p, parnames))
-		s *= "\\delta " * name * " = " * string(abs(round(par; sigdigits=4))) * ",\\quad"
+		s *= "\\delta " * name * " = " * string(abs(round(par; sigdigits=4))) * ", \\,"
 	end
 	return s
 end
@@ -96,9 +96,7 @@ function assimMovie(tt, xt, xo, xf, xa; framerate = 60)
 	xlims!(ax, (minimum(px), maximum(px)))
 	ylims!(ax, (-0.1, 1.1))
 
-	#axislegend(ax, merge=true, unique=true)
-	Legend(fig[1,3], ax, tellheight=true, tellwidth=true)
-	#par = Label(fig[2,3], text = L"$%$(printParameters(_pa[] .- _pt[]))$", tellwidth=true, tellheight=true)
+	axislegend(ax, merge=true, unique=true, orientation = :horizontal)
 
 	tit = Label(fig[0, :], text = L"$t = %$(_tt[]) $ [t.u.]; $ %$(printParameters(_pa[] .- _pt[])) $", fontsize = 22, tellwidth=false)
 
