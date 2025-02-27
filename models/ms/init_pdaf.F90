@@ -209,7 +209,7 @@ SUBROUTINE init_pdaf()
                     ! (0) for (r+1)^-1 (old SEIK); (1): for r^-1 (real ensemble
                     ! covariance matrix) This parameter has also to be set internally
                     ! in PDAF_init
-  cradius = 5       ! Cut-off radius in grid points for observation domain
+  cradius = 32       ! Cut-off radius in grid points for observation domain
   locweight = 0     ! Type of localizating weighting
                     !   (0) constant weight of 1
                     !   (1) exponentially decreasing with SRADIUS

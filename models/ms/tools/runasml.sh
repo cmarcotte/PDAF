@@ -11,13 +11,14 @@
 EXE="./pdaf_mitsch"
 
 # General settings for all experiments
-DEFAULTS="-total_steps 50000 -step_null 0 -dim_ens 30"
-
-FILTER=7
+DEFAULTS="-total_steps 100000 -step_null 0 -dim_ens 30 -model_err_amp 0.01"
 
 # Run experiments
-for FORGET in 1
-do
-    $EXE $DEFAULTS -filtertype $FILTER -forget $FORGET \
-	-file_asml t${FILTER}_N30_f${FORGET}.nc -forcing 0.01
+for FORGET in 1; do
+	for FILTER in 4 5 6 7 9 10 11; do
+		for FORCING in 0.01; do
+			$EXE $DEFAULTS -filtertype $FILTER -forget $FORGET -forcing ${FORCING} \
+				-file_asml FILTER${FILTER}_FORGET${FORGET}_FORCING${FORCING}_ME_0.01.nc
+		done
+	done
 done

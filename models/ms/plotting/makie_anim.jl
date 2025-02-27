@@ -131,15 +131,6 @@ function assimMovie(tt, xt, xo, xf, xa; framerate = 60, name = "assim_anim.mp4")
 	return fig, ax
 end
 
-function paramPlot()
-	CairoMakie.activate!()
-	# set up the figure
-	fig = Figure(size = (1024, 512), figure_padding = 8, fontsize = 22, fonts = (; regular = texfont(), bold = texfont()))
-	ax = Axis(fig[1:2,1:2], xlabel = L"$x$ [s.u.]", ylabel = L"$u_1(t,x)$")
-
-	return fig, ax
-end
-
 function main(ARGS)
 
 	assim_file 	= ARGS[1]
@@ -182,7 +173,54 @@ function main(ARGS)
 	# create the assimilation movie
 	assimMovie(tt, xt, xo, xf, xa; name = assim_file);
 
-
 end
 
 main(ARGS)
+
+
+function plotParametersOverTime(;truth_file = "/home/chris/Development/PDAF/models/ms/state.nc", assim_file = "/home/chris/Development/PDAF/models/ms/FILTER6_FORGET1_FORCING0.01.nc", name = "param_plot.svg", parnames = ("\\sigma", "k", "\\tau_{i}", "\\tau_{u}", "\\tau_{o}", "\\tau_{c}", "u_{g}"))
+
+	# load the time, forecast, and analysis states from the assim file
+	ta = ncread(assim_file, "time")
+	xa = ncread(assim_file, "state_ana")
+
+	# Load the truth from the truth file
+	xt = ncread(truth_file, "state")
+	tt = ncread(truth_file, "time")
+
+	# select the overlapping index ranges
+	it = selectRange(tt, ta)
+	ia = selectRange(ta, tt[it])
+#=
+	# select the overlapping times
+	tt = tt[it]
+	ta = ta[ia]
+
+	# select the overlapping states
+	xt = xt[:,it]
+	xa = xa[:,ia]
+=#
+	# set up the figure
+	CairoMakie.activate!()
+	fig = Figure(size = (1024, 512), figure_padding = 8, fontsize = 22, fonts = (; regular = texfont(), bold = texfont()))
+	ax = Axis(fig[1:2,1:2], xlabel = L"$t$ [t.u.]", ylabel = L"$\mathbf{p}$", yscale = log10)
+
+	for i in 1:7
+		lines!(ax, tt, xt[1024+i,:], color = :black, label=L"$%$(parnames[i])^{\text{true}}$")
+	end
+	for i in 1:7
+		lines!(ax, ta, xa[1024+i,:], color = i, colormap = :tab10, colorrange = (1, 10), linestyle = :dash, linewidth = 2, label=L"$%$(parnames[i])^{\text{a}}$")
+		#lines!(ax, tt, xf[1024+i,:], color = i, colormap = :tab10, colorrange = (1, 10), linestyle = :dash, linewidth = 2, label=L"$%$(parnames[i])^{\text{b}}$")
+	end
+
+	xlims!(ax, (minimum(tt), maximum(tt)))
+
+	#axislegend(ax, merge=true, unique=true, orientation = :horizontal)
+	fig[0, :] = Legend(fig, ax, L"Parameters $ $", framevisible = false, merge=true, unique=true, orientation = :horizontal, ncols = 3)
+
+	resize_to_layout!(fig)
+
+	save(name, fig; pt_per_unit = 1)
+	return fig, ax
+
+end
