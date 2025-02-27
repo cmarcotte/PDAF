@@ -9,7 +9,7 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
 ! !DESCRIPTION:
 ! User-supplied routine for PDAF (SEIK):
 !
-! The routine is called by init_seik. It 
+! The routine is called by init_seik. It
 ! initializes an ensemble of dim\_ens states
 ! by random drawing from the long trajectory
 ! representing the true state.
@@ -30,7 +30,7 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
   USE output_netcdf, &
        ONLY: file_state
   USE mod_assimilation, &
-       ONLY: seedset
+       ONLY: seedset, model_error, model_err_amp
 
   IMPLICIT NONE
 
@@ -38,7 +38,7 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
   INTEGER, INTENT(in) :: dim                 ! PE-local state dimension
   INTEGER, INTENT(in) :: dim_ens             ! Size of ensemble
   REAL, INTENT(inout) :: state(dim)          ! PE-local model state
-  ! It is not necessary to initialize the array 'state' for SEIK. 
+  ! It is not necessary to initialize the array 'state' for SEIK.
   ! It is available here only for convenience and can be used freely.
   REAL, INTENT(out)   :: ens(dim, dim_ens)   ! PE-local state ensemble
   INTEGER, INTENT(inout) :: flag             ! PDAF status flag
@@ -63,12 +63,12 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
   INTEGER :: iseed(4)                 ! Seed-array for DLARNV
   INTEGER :: pos(2)                   ! Position index for reading from file
   INTEGER :: cnt(2)                   ! Count index for reading from file
-
+  REAL, ALLOCATABLE :: noise(:)      	! Random noise for parameters
 
 ! **********************
 ! *** INITIALIZATION ***
 ! **********************
-  
+
   ! *** Generate full ensemble on filter-PE 0 ***
   WRITE (*, '(9x, a)') '--- generate ensemble'
   WRITE (*, '(9x, a)') &
@@ -79,7 +79,7 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
 ! *************************************************
 ! *** Initialize initial state and covar matrix ***
 ! *************************************************
-  
+
   WRITE(*,'(9x,a,a)') '--- Reading true states from ', TRIM(file_state)
 
   s = 1
@@ -120,12 +120,16 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
        '--- Use seed set no. ', seedset
 
 ! *** Initialize array of random indices
-
   allocate(rnd_indx(dim_ens))
   allocate(rnd_array(dim_ens))
+
+! *** Initialize array for parameter noise ***
+  allocate(noise(7))
+
   ! count allocated memory
   CALL memcount(2, 'r', dim_ens)
   CALL memcount(2, 'i', dim_ens)
+  CALL memcount(2, 'r', 7)
 
   ! Initialize seed
   IF (seedset == 2) THEN
@@ -196,7 +200,7 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
   stat(s) = NF90_INQ_VARID(fileid, 'state', id_state)
 
   DO i = 1, dim_ens
-     
+
      pos(2) = rnd_indx(i)
      cnt(2) = 1
      pos(1) = 1
@@ -210,6 +214,13 @@ SUBROUTINE init_ens_rnd(dim, dim_ens, state, ens, flag)
           WRITE(*, *) 'NetCDF error in reading states from init file, no.', i
   END DO
 
+  IF (model_error) THEN
+	  ! Add model error to ensemble
+	  DO i = 1, size(ens, 2)
+		  CALL dlarnv(3, iseed, 7, noise)
+		  ens(1024:1031, i) = ens(1024:1031, i) + model_err_amp * noise(i)
+	  END DO
+  END IF
 
 ! ****************
 ! *** clean up ***
